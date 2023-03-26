@@ -102,9 +102,6 @@ namespace CGL {
 
         *pdf = p_h / (4 * dot(*wi, h));
         return L_out;
-
-        //*wi = cosineHemisphereSampler.get_sample(pdf);
-        //return MicrofacetBSDF::f(wo, *wi);
     }
 
     void MicrofacetBSDF::render_debugger_node()
