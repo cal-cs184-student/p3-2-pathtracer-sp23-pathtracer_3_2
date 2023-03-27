@@ -81,7 +81,19 @@ namespace CGL {
         // *Importance* sample Beckmann normal distribution function (NDF) here.
         // Note: You should fill in the sampled direction *wi and the corresponding *pdf,
         //       and return the sampled BRDF value.
+
+        if (1) {
+            *wi = cosineHemisphereSampler.get_sample(pdf);
+            return MicrofacetBSDF::f(wo, *wi);
+        }
         Vector2D r(sampler.get_sample());
+        //eta = Vector3D(0.33660, 0.52630, 0.94580);
+        //k = Vector3D(3.0824, 2.4064, 2.0158);   brass
+        //eta = Vector3D(1.3345, 1.8252, 0.98574);
+        //k = Vector3D(2.2091, 1.9416, 3.2882);  AuAl2
+        //eta = Vector3D(1.9691, 1.9169, 2.2762);
+        //k = Vector3D(3.2435, 2.9323, 3.9519);  PtAl2
+        //alpha = 0.5;
         double theta(atan(-std::pow(alpha, 2) * std::log(1.0 - r[0]))), phi(2 * PI * r[1]);
         Vector3D h(sin(theta)*cos(phi), sin(theta)*sin(phi), cos(theta));
         *wi = 2.0 * (wo * h) * h - wo;

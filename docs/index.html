@@ -1,17 +1,28 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-<style>  
-    div.padded {  
-      padding-top: 0px;  
-      padding-right: 100px;  
-      padding-bottom: 0.25in;  
-      padding-left: 100px;  
-    }  
-  </style> 
-<title>Your Name  |  CS 184</title>
-<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<link rel="stylesheet" type="text/css" href="style.css" media="screen" />
+    <style>
+        div.padded {
+            padding-top: 0px;
+            padding-right: 100px;
+            padding-bottom: 0.25in;
+            padding-left: 100px;
+        }
+    </style>
+    <title>Your Name  |  CS 184</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" type="text/css" href="style.css" media="screen" />
+
+    <script>
+  MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']]
+    }
+  };
+    </script>
+    <script id="MathJax-script" async=async
+            src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+    </script>
 </head>
 <body>
 <br />
@@ -21,120 +32,374 @@
 
     <div class="padded">
 
-        
-        * NOTE: For this project, you will choose TWO out of the four given parts to complete. One of those parts must be Part 1 or Part 2. In other words, you can choose any combination of two parts except the pair (Part 3, Part 4).
-
 
         <h3 align="middle">Part 1. Mirror and Glass Materials</h3>
 
-        <p><b>
-            Show a sequence of six images of scene `CBspheres.dae` rendered with `max_ray_depth` set to 0, 1, 2, 3, 4, 5, and 100. The other settings should be at least 64 samples per pixel and 4 samples per light. Make sure to include all screenshots.
-        </b></p>
         <p>
-            Your response goes here.
+            <b>
+                1) Show a sequence of six images of scene `CBspheres.dae` rendered with `max_ray_depth` set to 0, 1, 2, 3, 4, 5, and 100. The other settings should be at least 64 samples per pixel and 4 samples per light. 2) Point out the new multibounce effects that appear in each image, and 3) explain how these bounce numbers relate to the particular effects that appear. Make sure to include all screenshots.
+            </b>
         </p>
-        <br>
-        <p><b>
-            Point out the new multibounce effects that appear in each image. 
-        </b></p>
+
+        <div align="middle">
+            <table style="width:100%">
+                <tr align="center">
+                    <td>
+                        <img src="images/CBspheres_0.png" align="middle" />
+                        <figcaption>CBspheres_0.png</figcaption>
+                    </td>
+                </tr>
+            </table>
+        </div>
         <p>
-            Your response goes here.
+            When rendering with 0 max_ray_depth, the render result only includes the direct illumination from the light source, as expected. This is because with a max_ray_depth value of 0, only light rays from the camera that hits a light source directly have a non-zero return value through zero bounce illumination. At least one bounce illumination is immediately halted upon entering the funtion, so everything else is black.
         </p>
-        <br>
-        <p><b>
-            Explain how these bounce numbers relate to the particular effects that appear. Make sure to include all screenshots.
-        </b></p>
+        <div align="middle">
+            <table style="width:100%">
+                <tr align="center">
+                    <td>
+                        <img src="images/CBspheres_1.png" align="middle" />
+                        <figcaption>CBspheres_1.png</figcaption>
+                    </td>
+                </tr>
+            </table>
+        </div>
         <p>
-            Your response goes here.
+            With 1 maximum ray depth, the reflections from the walls as well as the spheres begin being rendered. Since there is only one reflection allowed after hitting the balls, only direct illumination hitting the spheres would be illustrated. This results in only the light source being reflectd on the balls. Also notice that the ball on the right has a darker reflection than the one on the left: this is because the right ball has the glass bsdf in which only $ 1/R $ of the light rays hitting its surface are sampled as reflected, where $R$ is Schlick's reflection coefficient. The rest of the light hitting the right sphere are refracted and not rendered (since they do not hit a light source after refracting).
         </p>
-        <br>
+        <div align="middle">
+            <table style="width:100%">
+                <tr align="center">
+                    <td>
+                        <img src="images/CBspheres_2.png" align="middle" />
+                        <figcaption>CBspheres_2.png</figcaption>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <p>
+            With 2 maximum ray depth, the reflections from the ceiling are also rendered. They were not rendered in the last picture because at least 1 bounce is required after hitting the ceiling for a ray that reaches a light source to be rendered. Similarly, the reflections that requires 1 bounce after hitting the spheres to hit a light source are rendered, resulting in the reflection on both balls. Notice that the reflections on the right spheres are still much darker because of the same reason where only a fraction of the rays hitting it are reflected. Lastly, the refracted rays are still unrendered: the just reached the surface from inside of the sphere and still require one more bounce to reach a light source, so the right sphere is still largely black.
+        </p>
+
+        <div align="middle">
+            <table style="width:100%">
+                <tr align="center">
+                    <td>
+                        <img src="images/CBspheres_3.png" align="middle" />
+                        <figcaption>CBspheres_3.png</figcaption>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <p>
+            With 3 maximum ray depth, the refracted rays are finally beginning to reach the light source, resulting in the right sphere's refractions of the objects behind it being rendered. However, Note how the reflection of the right sphere on the left sphere still only has reflections and no refractions. This is because the rays that go through those paths still need one more bounce (due to being reflected instead of directly hitting the right sphere) to reach the light source, and thus are still unrendered.
+        </p>
+
+        <div align="middle">
+            <table style="width:100%">
+                <tr align="center">
+                    <td>
+                        <img src="images/CBspheres_4.png" align="middle" />
+                        <figcaption>CBspheres_4.png</figcaption>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <p>
+            With 4 maximum ray depth, the reflected image of the right sphere is finally rendered. As previously explained, those rays requires at least 4 bounces to be rendered and thus are only just rendered. Along with this, a bright spot on the blue wall is rendered. The additional brightness come from the reflection from the bright spot under the sphere, also requiring 4 bounces to be rendered: the blue wall, the floor, refract into the sphere, and out of the sphere.
+        </p>
+
+        <div align="middle">
+            <table style="width:100%">
+                <tr align="center">
+                    <td>
+                        <img src="images/CBspheres_5.png" align="middle" />
+                        <figcaption>CBspheres_5.png</figcaption>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <p>
+            With 5 maximum ray depth, there are few outstanding improvements from the 4-maximum ray depth render. One notable feature is that there are a few bright pixels in the middle of the reflection of the right sphere in the left sphere, this is the reflection of the bright spot on the blue wall that we talked about in the last step.
+        </p>
+
+        <div align="middle">
+            <table style="width:100%">
+                <tr align="center">
+                    <td>
+                        <img src="images/CBspheres_100.png" align="middle" />
+                        <figcaption>CBspheres_100.png</figcaption>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <p>
+            With 100 maximum ray depth, few further notable improvements can be found. One last notable thing to mention in this part is that the image becomes brighter (degree of which exponentialy decays) with every additional ray depth, this is because more ray bounces would enable more global illuminations to be rendered. Also note that the reflected and refracted images are always 1 and 2 steps behind, respectively, because the ray passing through those parts of the image need to take additional steps before reaching a light source.
+        </p>
 
 
         <h3 align="middle">Part 2. Microfacet Material</h3>
-        <p><b>
-            Show a screenshot sequence of 4 images of scene `CBdragon_microfacet_au.dae` rendered with $\alpha$ set to 0.005, 0.05, 0.25 and 0.5. The other settings should be at least 128 samples per pixel and 1 samples per light. The number of bounces should be at least 5. Describe the differences between different images. Note that, to change the $\alpha$, just open the .dae file and search for `microfacet`.
-        </b></p>
         <p>
-            Your response goes here.
+            <b>
+                Show a screenshot sequence of 4 images of scene `CBdragon_microfacet_au.dae` rendered with $\alpha$ set to 0.005, 0.05, 0.25 and 0.5. The other settings should be at least 128 samples per pixel and 1 samples per light. The number of bounces should be at least 5. Describe the differences between different images. Note that, to change the $\alpha$, just open the .dae file and search for `microfacet`.
+            </b>
         </p>
-        <br>
-        <p><b>
-            Show two images of scene `CBbunny_microfacet_cu.dae` rendered using cosine hemisphere sampling (default) and your importance sampling. The sampling rate should be fixed at 64 samples per pixel and 1 samples per light. The number of bounces should be at least 5. Briefly discuss their difference.
-        </b></p>
+        <div align="middle">
+            <table style="width:100%">
+                <tr align="center">
+                    <td>
+                        <img src="images/CBdragon_microfacet_au_0.005.png" align="middle" width="300px" />
+                        <figcaption>CBdragon_microfacet_au_0.005.png</figcaption>
+                    </td>
+                    <td>
+                        <img src="images/CBdragon_microfacet_au_0.05.png" align="middle" width="300px" />
+                        <figcaption>CBdragon_microfacet_au_0.05.png</figcaption>
+                    </td>
+                </tr>
+                <tr align="center">
+                    <td>
+                        <img src="images/CBdragon_microfacet_au_0.25.png" align="middle" width="300px" />
+                        <figcaption>CBdragon_microfacet_au_0.25.png</figcaption>
+                    </td>
+                    <td>
+                        <img src="images/CBdragon_microfacet_au_0.5.png" align="middle" width="300px" />
+                        <figcaption>CBdragon_microfacet_au_0.5.png</figcaption>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <br />
         <p>
-            Your response goes here.
+            As can be easily observed, the $\alpha$ value alters the roughness of the microfacet material. The higher $\alpha$ is, the closer the texture is to lambertian texture; while lower $\alpha$ makes the texture more similar to mirror texture. A higher value of $\alpha$ models a higher frequency of microfacets on the surface and thus a rougher surface.
         </p>
-        <br>
-        <p><b>
-            Show at least one image with some other conductor material, replacing `eta` and `k`. Note that you should look up values for real data rather than modifying them arbitrarily. Tell us what kind of material your parameters correspond to. 
-        </b></p>
+        <br />
         <p>
-            Your response goes here.
+            <b>
+                Show two images of scene `CBbunny_microfacet_cu.dae` rendered using cosine hemisphere sampling (default) and your importance sampling. The sampling rate should be fixed at 64 samples per pixel and 1 samples per light. The number of bounces should be at least 5. Briefly discuss their difference.
+            </b>
         </p>
-        <br>
-        
-        
-        
-
-        <h3 align="middle">Part 3. Environment Lightl</h3>
-        <b>Pick one *.exr* file to use for all subparts here. Include a converted *.jpg* of it in your website so we know what map you are using.</b>
-        
-        <p><b>
-            In a few sentences, explain the ideas behind environment lighting (i.e. why we do it/how it works).
-        </b></p>
+        <div align="middle">
+            <table style="width:100%">
+                <tr align="center">
+                    <td>
+                        <img src="images/CBbunny_microfacet_cu_HEM.png" align="middle" />
+                        <figcaption>Hemisphere Sampling</figcaption>
+                    </td>
+                </tr>
+                <tr align="center">
+                    <td>
+                        <img src="images/CBbunny_microfacet_cu_IMP.png" align="middle" />
+                        <figcaption>Importance Sampling</figcaption>
+                    </td>
+                </tr>
+            </table>
+        </div>
         <p>
-            Your response goes here.
+            The scene is rendered with 64 sampels per pixel, 1 sample per light, and 5 maximum ray depth. Although both finishes in an acceptable ammount of time, the render result from hemisphere sampling is significantly noisier. This is because hemisphere sampling samples uniformly, which is inefficient as most of the light has little to no influence to the final render result, while importance sampling samples light in directions more likely to contribute to the scene, resulting in a higher render quality with the same number of samples.
         </p>
-        <br>
-        <p><b>
-            Show the *probability_debug.png* file for the *.exr* file you are using, generated using the `save_probability_debug()` helper function after initializing your probability distributions.
-        </b></p>
+        <br />
         <p>
-            Your response goes here.
+            <b>
+                Show at least one image with some other conductor material, replacing `eta` and `k`. Note that you should look up values for real data rather than modifying them arbitrarily. Tell us what kind of material your parameters correspond to.
+            </b>
         </p>
-        <br>
-        <p><b>
-            Use the `bunny_unlit.dae` scene and your environment map *.exr* file and render two pictures, one with uniform sampling and one with importance sampling. Use 4 samples per pixel and 64 samples per light in each. Compare noise levels. Make sure to include all screenshots.
-        </b></p>
+        <div align="middle">
+            <table style="width:100%">
+                <tr align="center">
+                    <td>
+                        <img src="images/microfacet_bismuth.png" align="middle" />
+                        <figcaption>Bismuth</figcaption>
+                    </td>
+                </tr>
+                <tr align="center">
+                    <td>
+                        <img src="images/microfacet_carbon.png" align="middle" />
+                        <figcaption>Carbon(Graphite, Diamond, Carbon Nanotubes, etc.)</figcaption>
+                    </td>
+                </tr>
+                <tr align="center">
+                    <td>
+                        <img src="images/microfacet_brass.png" align="middle" />
+                        <figcaption>Cu-Zn Alloy "Brass"</figcaption>
+                    </td>
+                </tr>
+                <tr align="center">
+                    <td>
+                        <img src="images/microfacet_AuAl2.png" align="middle" />
+                        <figcaption>AuAl2 "Purple Plague"</figcaption>
+                    </td>
+                </tr>
+                <tr align="center">
+                    <td>
+                        <img src="images/microfacet_PtAl2.png" align="middle" />
+                        <figcaption>PtAl2</figcaption>
+                    </td>
+                </tr>
+            </table>
+        </div>
         <p>
-            Your response goes here.
+            The above is a demonstration of various materials we attempted. Below is a reference table for their refraction coefficient ($\eta$) and extinction coefficient ($k$):
         </p>
-        <br>
-        <p><b>
-            Use a different image (if you did part 2, we recommend `bunny_microfacet_cu_unlit.dae`) and your environment map *.exr* file and render two pictures, one with uniform sampling and one with importance sampling. Use 4 samples per pixel and 64 samples per light in each. Compare noise levels. Make sure to include all screenshots.
-        </b></p>
-        <p>
-            Your response goes here.
-        </p>
-        <br>
-
-
-
-        <h3 align="middle">Part 4. Depth of Field</h3>
-        <b>
-            For these subparts, we recommend using a microfacet BSDF scene to show off the cool out of focus effects you can get with depth of field!
-        </b>
-        <p><b>
-            In a few sentences, explain the differences between a pinhole camera model and a thin-lens camera model. 
-        </b></p>
-        <p>
-            Your response goes here.
-        </p>
-        <br>
-        <p><b>
-            Show a "focus stack" where you focus at 4 visibly different depths through a scene. Make sure to include all screenshots.
-        </b></p>
-        <p>
-            Your response goes here.
-        </p>
-        <br>
-        <p><b>
-            Show a sequence of 4 pictures with visibly different aperture sizes, all focused at the same point in a scene. Make sure to include all screenshots.
-        </b></p>
-        <p>
-            Your response goes here.
-        </p>
-        <br>
+        <table border="1" cellpadding="10" cellspacing="0" align="middle" >
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>$\lambda$ = 614nm (Red)</th>
+                    <th>$\lambda$ = 549nm (Green)</th>
+                    <th>$\lambda$ = 466nm (Blue)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        Bismuth
+                    </td>
+                    <td>
+                        <p>
+                            $\eta = 2.2260$
+                        </p>
+                        <p>
+                            $k = 3.0795$
+                        </p>
+                    </td>
+                    <td>
+                        <p>
+                            $\eta = 2.0273$
+                        </p>
+                        <p>
+                            $k = 2.8541$
+                        </p>
+                    </td>
+                    <td>
+                        <p>
+                            $\eta = 1.7531$
+                        </p>
+                        <p>
+                            $k = 2.5252$
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Carbon
+                    </td>
+                    <td>
+                        <p>
+                            $\eta = 2.4124$
+                        </p>
+                        <p>
+                            $k = 0.0000$
+                        </p>
+                    </td>
+                    <td>
+                        <p>
+                            $\eta = 2.4228$
+                        </p>
+                        <p>
+                            $k = 0.0000$
+                        </p>
+                    </td>
+                    <td>
+                        <p>
+                            $\eta = 2.4346$
+                        </p>
+                        <p>
+                            $k = 0.0000$
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Brass
+                    </td>
+                    <td>
+                        <p>
+                            $\eta = 0.33660$
+                        </p>
+                        <p>
+                            $k = 3.0824$
+                        </p>
+                    </td>
+                    <td>
+                        <p>
+                            $\eta = 0.52630$
+                        </p>
+                        <p>
+                            $k = 2.4064$
+                        </p>
+                    </td>
+                    <td>
+                        <p>
+                            $\eta = 0.94580$
+                        </p>
+                        <p>
+                            $k = 2.0158$
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        AuAl2
+                    </td>
+                    <td>
+                        <p>
+                            $\eta = 1.3345$
+                        </p>
+                        <p>
+                            $k = 2.2091$
+                        </p>
+                    </td>
+                    <td>
+                        <p>
+                            $\eta = 1.8252$
+                        </p>
+                        <p>
+                            $k = 1.9416$
+                        </p>
+                    </td>
+                    <td>
+                        <p>
+                            $\eta = 0.98574$
+                        </p>
+                        <p>
+                            $k = 3.2882$
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        PtAl2
+                    </td>
+                    <td>
+                        <p>
+                            $\eta = 1.9691$
+                        </p>
+                        <p>
+                            $k = 3.2435$
+                        </p>
+                    </td>
+                    <td>
+                        <p>
+                            $\eta = 1.9169$
+                        </p>
+                        <p>
+                            $k = 2.9323$
+                        </p>
+                    </td>
+                    <td>
+                        <p>
+                            $\eta = 2.2762$
+                        </p>
+                        <p>
+                            $k = 3.9519$
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                </tr>
+            </tbody>
+        </table>
+        <br />
 
     </div>
 </body>
